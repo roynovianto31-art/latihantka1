@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulasi Ujian Sosiologi TKA & US 2025 - Paket 2</title>
+<style>
+:root{
+  --bg:#f3f5fb; --card:#fff; --ink:#1d2433; --muted:#6b7488; --line:#e3e7f1;
+  --brand:#3b4cca; --brand2:#6a5af9; --ok:#12a150; --okbg:#e6f7ee; --bad:#d6293e; --badbg:#fdebee;
+  --warn:#e8a200; --warnbg:#fff6df; --shadow:0 6px 24px rgba(40,52,120,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+.hidden{display:none!important}
+button{font-family:inherit;cursor:pointer}
+/* Start */
+.start{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#2a37a8,#6a5af9 60%,#8f7bff)}
+.start-card{background:#fff;border-radius:20px;max-width:760px;width:100%;padding:36px;box-shadow:var(--shadow)}
+.badge{display:inline-block;background:#eceeff;color:var(--brand);font-weight:700;font-size:12px;padding:5px 12px;border-radius:99px;letter-spacing:.5px}
+.start-card h1{margin:12px 0 4px;font-size:28px}
+.start-card p.sub{color:var(--muted);margin:0 0 22px}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.info{background:#f6f7ff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.info b{display:block;font-size:24px;color:var(--brand)}
+.info span{font-size:13px;color:var(--muted)}
+.rules{background:var(--warnbg);border-radius:14px;padding:14px 18px;font-size:14px;margin-bottom:22px}
+.rules ul{margin:6px 0 0 18px;padding:0}
+label.f{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+input[type=text]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;margin-bottom:18px;font-family:inherit}
+input[type=text]:focus{outline:none;border-color:var(--brand)}
+.btn{border:0;border-radius:12px;padding:13px 24px;font-weight:700;font-size:15px;transition:.15s}
+.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 16px rgba(59,76,202,.3)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn-warn{background:var(--warnbg);color:#8a5d00;border:1.5px solid #f3d98a}
+.btn-warn.on{background:var(--warn);color:#fff;border-color:var(--warn)}
+.btn-danger{background:var(--bad);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+/* Exam */
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.topbar-in{max-width:1200px;margin:auto;padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tb-title{font-weight:700;font-size:15px}
+.tb-title small{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.spacer{flex:1}
+.timer{background:#eef0ff;color:var(--brand);font-weight:800;font-variant-numeric:tabular-nums;padding:8px 16px;border-radius:12px;font-size:18px}
+.timer.low{background:var(--badbg);color:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.6}}
+.progress{height:5px;background:var(--line)}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:width .3s}
+.layout{max-width:1200px;margin:22px auto;padding:0 20px;display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.side{order:-1}}
+.qcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:28px}
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.qno{background:var(--brand);color:#fff;font-weight:800;border-radius:10px;padding:5px 14px}
+.pts{background:#eceeff;color:var(--brand);font-size:12px;font-weight:700;padding:5px 10px;border-radius:99px}
+.qtext{font-size:17px;margin-bottom:16px}
+.extra{background:#f8f9fe;border:1px dashed #c9cff0;border-radius:14px;padding:14px;margin:0 0 18px;text-align:center;font-size:14px;overflow-x:auto}
+.extra table{margin:auto;border-collapse:collapse;min-width:300px}
+.extra th,.extra td{border:1px solid var(--line);padding:7px 14px;text-align:left}
+.extra th{background:#eceeff}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15.5px;color:var(--ink);transition:.12s}
+.opt:hover{border-color:#aab2f0;background:#f8f9ff}
+.opt .l{flex:0 0 32px;height:32px;border-radius:50%;background:#eef0f8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.opt.sel{border-color:var(--brand);background:#eff1ff}
+.opt.sel .l{background:var(--brand);color:#fff}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.ok .l{background:var(--ok);color:#fff}
+.opt.no{border-color:var(--bad);background:var(--badbg)}
+.opt.no .l{background:var(--bad);color:#fff}
+.opt[disabled]{cursor:default}
+.nav{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.nav .spacer{flex:1}
+.side{position:sticky;top:78px}
+.panel{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:18px}
+.panel h3{margin:0 0 12px;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.nb{aspect-ratio:1;border:2px solid var(--line);background:#fff;border-radius:10px;font-weight:700;font-size:13px;color:var(--muted);position:relative}
+.nb:hover{border-color:var(--brand)}
+.nb.ans{background:var(--brand);border-color:var(--brand);color:#fff}
+.nb.flag::after{content:"";position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:var(--warn);border:2px solid #fff}
+.nb.cur{box-shadow:0 0 0 3px rgba(106,90,249,.35);border-color:var(--brand2)}
+.nb.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.nb.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.nb.skip{background:#fff;border-color:#9aa3bd;color:#5b6479}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);margin-top:14px}
+.legend span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c);border:1px solid var(--line)}
+.stat{display:flex;justify-content:space-between;font-size:13px;margin:12px 0 4px;color:var(--muted)}
+/* Pembahasan */
+.explain{margin-top:18px;border-radius:14px;padding:16px 18px;font-size:15px}
+.explain.ok{background:var(--okbg);border-left:5px solid var(--ok)}
+.explain.bad{background:var(--badbg);border-left:5px solid var(--bad)}
+.explain.skip{background:var(--warnbg);border-left:5px solid var(--warn)}
+.explain h4{margin:0 0 6px;font-size:15px}
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(20,26,50,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal-box{background:#fff;border-radius:18px;padding:28px;max-width:440px;width:100%;box-shadow:var(--shadow)}
+.modal-box h3{margin:0 0 8px}
+.modal-box .row{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+/* Result */
+.result{max-width:1000px;margin:26px auto;padding:0 20px}
+.hero{background:linear-gradient(135deg,#2a37a8,#6a5af9);color:#fff;border-radius:22px;padding:30px;display:flex;gap:28px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow)}
+.ring{width:150px;height:150px;border-radius:50%;background:conic-gradient(#fff var(--p),rgba(255,255,255,.2) 0);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.ring div{width:118px;height:118px;border-radius:50%;background:#3b44b8;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring b{font-size:38px;line-height:1}
+.ring span{font-size:12px;opacity:.85}
+.hero h2{margin:0 0 4px;font-size:26px}
+.hero p{margin:4px 0;opacity:.92}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0}
+.sc{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+.sc b{display:block;font-size:26px}
+.sc span{font-size:13px;color:var(--muted)}
+.sc.g b{color:var(--ok)}.sc.r b{color:var(--bad)}.sc.y b{color:var(--warn)}
+.rubric{background:#fff;border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:18px;overflow-x:auto}
+.rubric h3{margin:0 0 12px}
+.rubric table{width:100%;border-collapse:collapse;font-size:14px}
+.rubric th,.rubric td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left}
+.rubric th{background:#f3f4ff}
+.rubric tr.me{background:#eaf7ef;font-weight:700}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.chip{border:1.5px solid var(--line);background:#fff;padding:8px 16px;border-radius:99px;font-weight:600;font-size:14px}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.review-item{margin-bottom:18px}
+.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px}
+.tag.ok{background:var(--okbg);color:var(--ok)}.tag.bad{background:var(--badbg);color:var(--bad)}.tag.skip{background:var(--warnbg);color:#8a5d00}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px}
+@media print{.topbar,.filters,.btn{display:none}}
+</style>
+</head>
+<body>
+
+<!-- START -->
+<section id="start" class="start">
+  <div class="start-card">
+    <span class="badge">SIMULASI UJIAN • TKA & US 2025</span>
+    <h1>Sosiologi — Paket 2</h1>
+    <p class="sub">Simulasi ujian interaktif lengkap dengan kunci jawaban (edisi koreksi) dan pembahasan.</p>
+    <div class="info-grid">
+      <div class="info"><b>50</b><span>Soal Pilihan Ganda</span></div>
+      <div class="info"><b>2</b><span>Poin per Soal</span></div>
+      <div class="info"><b>100</b><span>Skor Maksimal</span></div>
+      <div class="info"><b>90′</b><span>Waktu Pengerjaan</span></div>
+    </div>
+    <div class="rules"><b>Petunjuk:</b>
+      <ul>
+        <li>Pilih satu jawaban paling tepat (A–E) untuk setiap soal.</li>
+        <li>Jawaban benar = 2 poin, salah atau kosong = 0 poin (tanpa pengurangan).</li>
+        <li>Gunakan tanda “Ragu-ragu” untuk soal yang ingin dicek ulang.</li>
+        <li>Pembahasan baru muncul setelah ujian diselesaikan.</li>
+        <li>Ujian otomatis dikumpulkan saat waktu habis.</li>
+      </ul>
+    </div>
+    <label class="f" for="nama">Nama Peserta</label>
+    <input id="nama" type="text" placeholder="Masukkan nama kamu" maxlength="40">
+    <button class="btn btn-primary" id="btnStart" style="width:100%">Mulai Ujian ▶</button>
+  </div>
+</section>
+
+<!-- EXAM -->
+<section id="exam" class="hidden">
+  <div class="topbar">
+    <div class="topbar-in">
+      <div class="tb-title">Sosiologi TKA & US 2025 — Paket 2<small id="peserta">Peserta</small></div>
+      <div class="spacer"></div>
+      <div class="timer" id="timer">90:00</div>
+      <button class="btn btn-primary" id="btnFinish">Selesai</button>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+  </div>
+  <div class="layout">
+    <main class="qcard" id="qcard"></main>
+    <aside class="side">
+      <div class="panel">
+        <h3>Navigasi Soal</h3>
+        <div class="grid" id="grid"></div>
+        <div class="legend">
+          <span style="--c:var(--brand)">Terjawab</span>
+          <span style="--c:#fff">Belum</span>
+          <span style="--c:var(--warn)">Ragu-ragu</span>
+        </div>
+        <div class="stat"><span>Terjawab</span><b id="stAns">0/50</b></div>
+        <div class="stat"><span>Ragu-ragu</span><b id="stFlag">0</b></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="hidden">
+  <div class="result">
+    <div class="hero">
+      <div class="ring" id="ring"><div><b id="rScore">0</b><span>dari 100</span></div></div>
+      <div>
+        <h2 id="rName">Hasil Ujian</h2>
+        <p id="rPred" style="font-size:18px;font-weight:700"></p>
+        <p id="rMsg"></p>
+        <p style="font-size:13px" id="rTime"></p>
+      </div>
+    </div>
+    <div class="cards">
+      <div class="sc g"><b id="cOk">0</b><span>Benar</span></div>
+      <div class="sc r"><b id="cBad">0</b><span>Salah</span></div>
+      <div class="sc y"><b id="cSkip">0</b><span>Kosong</span></div>
+      <div class="sc"><b id="cPct">0%</b><span>Ketepatan</span></div>
+    </div>
+    <div class="rubric">
+      <h3>Rubrik Penilaian</h3>
+      <p style="margin:0 0 10px;font-size:14px;color:var(--muted)">Skor = jumlah jawaban benar × 2 poin. Jawaban salah dan kosong bernilai 0.</p>
+      <table id="rubTable">
+        <thead><tr><th>Rentang Skor</th><th>Jumlah Benar</th><th>Predikat</th></tr></thead>
+        <tbody>
+          <tr data-r="A"><td>90 – 100</td><td>45 – 50</td><td>Sangat Baik</td></tr>
+          <tr data-r="B"><td>75 – 89</td><td>38 – 44</td><td>Baik</td></tr>
+          <tr data-r="C"><td>60 – 74</td><td>30 – 37</td><td>Cukup</td></tr>
+          <tr data-r="D"><td>&lt; 60</td><td>0 – 29</td><td>Perlu Ditingkatkan</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid" id="rGrid" style="grid-template-columns:repeat(10,1fr);background:#fff;padding:16px;border-radius:18px;box-shadow:var(--shadow);margin-bottom:6px"></div>
+    <div class="filters" id="filters">
+      <button class="chip on" data-f="all">Semua</button>
+      <button class="chip" data-f="ok">Benar</button>
+      <button class="chip" data-f="bad">Salah</button>
+      <button class="chip" data-f="skip">Kosong</button>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost" id="btnRetry">↻ Ulangi Ujian</button>
+    </div>
+    <div id="review"></div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal hidden" id="modal">
+  <div class="modal-box">
+    <h3 id="mTitle">Kumpulkan jawaban?</h3>
+    <div id="mBody"></div>
+    <div class="row">
+      <button class="btn btn-ghost" id="mCancel">Kembali</button>
+      <button class="btn btn-danger" id="mOk">Ya, Kumpulkan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== BANK SOAL ===== */
+var SVG_VENN='<svg viewBox="0 0 300 200" width="280" role="img" aria-label="Diagram irisan tiga kelompok penari"><g fill-opacity=".35" stroke="#3b4cca"><circle cx="110" cy="85" r="60" fill="#6a5af9"/><circle cx="190" cy="85" r="60" fill="#12a150"/><circle cx="150" cy="140" r="60" fill="#e8a200"/></g><g font-size="12" font-weight="700" fill="#1d2433" text-anchor="middle"><text x="85" y="60">A</text><text x="215" y="60">B</text><text x="150" y="185">C</text><text x="150" y="108">irisan</text></g></svg><div style="font-size:13px;margin-top:6px">(  ) = masyarakat &nbsp;|&nbsp; A = penari Pendet &nbsp; B = penari Gambyong &nbsp; C = penari Saman</div>';
+var SVG_PYR='<svg viewBox="0 0 300 190" width="260" role="img" aria-label="Piramida pelapisan sosial"><polygon points="150,10 110,60 190,60" fill="#6a5af9" fill-opacity=".8"/><polygon points="110,60 190,60 215,105 85,105" fill="#3b4cca" fill-opacity=".75"/><polygon points="85,105 215,105 240,150 60,150" fill="#12a150" fill-opacity=".7"/><polygon points="60,150 240,150 270,185 30,185" fill="#e8a200" fill-opacity=".75"/><g font-size="12" font-weight="700" fill="#fff" text-anchor="middle"><text x="150" y="48">1</text><text x="150" y="88">2</text><text x="150" y="132">3</text><text x="150" y="172">4</text></g></svg><div style="font-size:13px;margin-top:6px">1. Brahmana &nbsp; 2. Ksatria &nbsp; 3. Waisya &nbsp; 4. Sudra</div>';
+var BAGAN16='<div style="font-size:14px;line-height:1.9"><b>Bagan Mobilitas Sosial</b><br>Ayah (petani) &amp; Ibu<br>↓<br><span style="display:inline-block;margin:2px 6px;padding:4px 12px;border-radius:8px;background:#eceeff">Anak ke-1: petani</span><span style="display:inline-block;margin:2px 6px;padding:4px 12px;border-radius:8px;background:#eceeff">Anak ke-2: pedagang</span><span style="display:inline-block;margin:2px 6px;padding:4px 12px;border-radius:8px;background:#eceeff">Anak ke-3: buruh</span></div>';
+var BAGAN22='<div style="font-size:15px"><b>Bagan Mobilitas Sosial</b><br><span style="display:inline-block;margin:6px;padding:6px 16px;border-radius:8px;background:#eceeff">1. Perawat (orang tua)</span> ➜ <span style="display:inline-block;margin:6px;padding:6px 16px;border-radius:8px;background:#e6f7ee">2. Dokter (anak)</span></div>';
+var TBL49='<table><thead><tr><th>No</th><th>Nama Perguruan Tinggi</th><th>Frekuensi</th></tr></thead><tbody><tr><td>1</td><td>Universitas A</td><td>1.000</td></tr><tr><td>2</td><td>Universitas B</td><td>2.600</td></tr><tr><td>3</td><td>Universitas C</td><td>1.300</td></tr><tr><td>4</td><td>Universitas D</td><td>1.200</td></tr><tr><td>5</td><td>Universitas E</td><td>2.500</td></tr><tr><td>6</td><td>Universitas F</td><td>1.400</td></tr></tbody></table>';
+
+var Q=[
+{q:"Salah satu masalah sosial yang terjadi di masyarakat adalah kemiskinan yang berakibat pada peningkatan pengangguran dan kriminalitas. Untuk mengatasi permasalahan tersebut perlu dikaji berbagai faktor penyebab terjadinya kemiskinan. Fungsi sosiologi adalah memberikan sumbangan dalam bentuk ....",
+ o:["perencanaan","jasa konsultan","ketersediaan data","kegiatan distribusi","tenaga kerja produktif"],k:0,
+ p:"Pada tahap <b>perencanaan</b>, sosiologi berguna untuk mengidentifikasi dan mengkaji permasalahan yang akan ditangani. Dalam soal ini, sosiologi mengkaji berbagai faktor penyebab kemiskinan sehingga sumbangannya berupa perencanaan."},
+{q:"Pak Bambang menegur anaknya saat makan malam bersama karena ketika makan ia mengecap (mengeluarkan bunyi dari mulut). Tindakan Pak Bambang merupakan suatu proses sosialisasi supaya anaknya mematuhi norma ....",
+ o:["value/tata nilai","estetika/rasa seni","laws/hukum formal","ekonomi/untung rugi","usage/cara berperilaku"],k:4,
+ p:"Cara berperilaku (<i>usage</i>) adalah bentuk perbuatan tertentu yang dilakukan individu, tetapi tidak secara terus-menerus. Pelanggaran terhadap norma ini tidak berakibat hukuman, hanya berupa teguran atau celaan ringan."},
+{q:"Apabila bertemu sahabat lama, kita selalu berjabat tangan atau ketika kita memasuki rumah orang lain, selalu kita dahului dengan mengetuk pintu.\nBerdasarkan daya ikatnya, perilaku sosial tersebut termasuk pelaksanaan norma ....",
+ o:["cara","hukum","kebiasaan","tata kelakuan","adat istiadat"],k:2,
+ p:"Norma kebiasaan (<i>folkways</i>) adalah perbuatan yang dilakukan berulang-ulang dalam bentuk yang sama, dilakukan secara sadar, memiliki tujuan jelas, dan dianggap baik serta benar oleh masyarakat. Berjabat tangan dan mengetuk pintu termasuk kategori ini."},
+{q:"Seorang remaja sangat mengidolakan seorang artis terkenal. Ia ingin menjadi sama persis dengan sang idola, sehingga ia berencana melakukan operasi plastik agar wajahnya mirip dengan artis tersebut.\nDari contoh tersebut, faktor yang memengaruhi interaksi sosial adalah ....",
+ o:["simpati","imitasi","sugesti","empati","identifikasi"],k:4,
+ p:"<b>Identifikasi</b> adalah kecenderungan dalam diri seseorang untuk menjadi <i>sama</i> dengan orang lain yang dikagumi (idola). Remaja pada soal tidak sekadar meniru sebagian perilaku, tetapi ingin menjadi mirip secara utuh dengan sang artis hingga rela mengubah wajahnya.<br><i>Pembeda:</i> imitasi = meniru perilaku/penampilan tertentu; identifikasi = keinginan menjadi sama dengan sosok idola secara mendalam."},
+{q:"Menjelang Pilkada untuk pemilihan Walikota Semarang, partai-partai politik melakukan kerja sama dengan tujuan memenangkan Pilkada. Ditinjau dari bentuk interaksi sosialnya, tujuan kerja sama dalam memenangkan Pilkada termasuk ....",
+ o:["koalisi","joint venture","kooptasi","bersaing","koersi"],k:0,
+ p:"<b>Koalisi</b> adalah kerja sama dua organisasi politik atau lebih untuk mencapai tujuan yang sama dengan cara bergabung. <i>Joint venture</i> bersifat ekonomi (patungan usaha), sedangkan kooptasi adalah penerimaan unsur baru dalam kepemimpinan organisasi."},
+{q:"Seorang artis Indonesia mendapatkan penghargaan dari salah satu perguruan tinggi di luar negeri sebagai Doctor Honoris Causa karena dianggap sudah berhasil mengembangkan dan melestarikan musik tertentu. Berdasarkan deskripsi tersebut, dapat disimpulkan bahwa pemberian status sosial dilatarbelakangi oleh ....",
+ o:["pendidikan formal","simpati masyarakat","prestasi di bidangnya","proses interaksi sosial","kekaguman pihak luar"],k:2,
+ p:"Gelar kehormatan tersebut termasuk status yang diperoleh (<i>achieved status</i>) karena usaha dan <b>prestasi</b> individu, yaitu mengembangkan dan melestarikan musik."},
+{q:"Setiap hari Senin semua sekolah melaksanakan upacara bendera, seluruh siswanya memakai pakaian seragam yang rapi begitu pula bapak dan ibu gurunya. Hal ini menunjukkan salah satu unsur pembentuk keteraturan sosial, yaitu ....",
+ o:["struktur sosial","tertib sosial","order sosial","keajegan","pola"],k:3,
+ p:"<b>Keajegan</b> adalah kondisi keteraturan sosial yang sifatnya tetap dan berlangsung terus-menerus, misalnya siswa selalu berseragam setiap hari sesuai aturan atau upacara rutin tiap Senin."},
+{q:"Seorang individu dilahirkan dan berkembang ke masa anak-anak, maka pada saat itu dia mulai beradaptasi dan mulai bersosialisasi dengan lingkungan terdekatnya. Pada tahap ini anak mulai mengenal keluarganya. Hal ini merupakan bentuk sosialisasi ....",
+ o:["primer","sekunder","lanjutan","langsung","lingkungan"],k:0,
+ p:"Sosialisasi <b>primer</b> adalah sosialisasi pertama yang dijalani individu pada masa kecil di lingkungan keluarga (sekitar usia 1–5 tahun, sebelum sekolah). Anak mulai mengenal anggota keluarga dan membedakan dirinya dari orang lain."},
+{q:"Contoh perilaku yang menyimpang:\n(1) Jessica dan Feny gemar memakai seragam yang ketat;\n(2) Sekelompok remaja ditangkap polisi karena mengisap ganja;\n(3) Bobi gemar bermain game online sehingga lupa belajar;\n(4) Pejabat negara penerima suap ditangkap oleh KPK; dan\n(5) Penyedia jasa prostitusi bagi pria hidung belang diamankan oleh polisi.\nYang merupakan penyimpangan sekunder adalah ....",
+ o:["(1), (2), dan (3)","(1), (2), dan (4)","(1), (3), dan (5)","(2), (4), dan (5)","(3), (4), dan (5)"],k:3,
+ p:"Penyimpangan sekunder adalah pelanggaran berat yang dilakukan berulang-ulang meskipun sudah ada sanksi, sehingga pelakunya dikenal sebagai penyimpang, misalnya pengisap ganja, koruptor, dan pelaku prostitusi. Jadi yang benar adalah <b>(2), (4), dan (5)</b>. Nomor (1) dan (3) tergolong penyimpangan ringan (primer)."},
+{q:"Sejak kecil seorang anak laki-laki dibiasakan tertib berpakaian, sopan dalam tutur kata dan perilaku. Ketika remaja, ia akrab dengan teman bermain yang tidak memiliki kebiasaan yang sama dengannya. Lambat laun ia mengikuti gaya hidup temannya yang tidak disiplin, berpakaian seenaknya dan bertutur kata kasar. Penyimpangan perilaku tersebut disebabkan oleh ....",
+ o:["masyarakat yang tidak mendukung","sosialisasi yang tidak sempurna","sosialisasi subbudaya menyimpang","dampak keluarga yang tidak harmonis","kegagalan menyerap norma dari teman sebayanya"],k:2,
+ p:"Anak menyerap nilai dan norma dari teman bermain yang berperilaku menyimpang. Ini merupakan penyimpangan akibat <b>sosialisasi subbudaya menyimpang</b>: semakin banyak teman di sekitarnya yang menyimpang, semakin besar kemungkinan ia ikut menyimpang."},
+{q:"Terlambat masuk kelas, membolos, dan merokok sering terjadi di sekolah. Seorang guru BK melakukan pengendalian sosial dengan cara mengajak para siswa agar mematuhi norma yang berlaku di lingkungan sekolah. Karena pada dasarnya pengendalian sosial memiliki tujuan untuk ....",
+ o:["menciptakan masyarakat bebas berkreasi","mendapatkan kehidupan yang dinamis","menggalang kesatuan dalam kelompoknya","menciptakan masyarakat adil dan sejahtera","menciptakan masyarakat yang tertib dan teratur"],k:4,
+ p:"Pengendalian sosial pada dasarnya bertujuan menciptakan masyarakat yang <b>tertib dan teratur</b> sesuai nilai dan norma yang berlaku."},
+{q:"Perhatikan ilustrasi berikut!\nGambar tersebut menunjukkan interaksi struktur sosial berdasarkan pada unsur ....",
+ x:SVG_VENN,o:["sosial","profesi","budaya","asal usul","ekonomi"],k:1,
+ p:"Irisan ketiga kelompok (penari Pendet, Gambyong, dan Saman) memiliki kesamaan yaitu sebagai penari. Jadi dasar interseksinya adalah unsur <b>profesi</b>."},
+{q:"Struktur sosial horizontal suatu masyarakat di mana kelompok masyarakat memiliki bahasa yang sama, kesenian yang sama, dan adat istiadat yang sama. Ikatan sosial pada deskripsi tersebut disebut ....",
+ o:["ras","klan","dyad","klik","suku bangsa"],k:4,
+ p:"<b>Suku bangsa</b> adalah sekelompok manusia yang memiliki kesatuan budaya dan terikat identitas kebudayaan tertentu seperti bahasa, kesenian, dan adat istiadat yang sama."},
+{q:"Perhatikan gambar struktur sosial vertikal berikut!\nYang menjadi dasar pembentukan pelapisan sosial di atas adalah ....",
+ x:SVG_PYR,o:["politik","kekayaan","pekerjaan","keturunan","pendidikan"],k:3,
+ p:"Sistem kasta Hindu (Brahmana, Ksatria, Waisya, Sudra) adalah stratifikasi tertutup yang dasarnya adalah <b>keturunan</b> (<i>ascribed status</i>)."},
+{q:"Setelah menyelesaikan kuliahnya, Fahri aktif dalam kegiatan organisasi profesi, dan saat ini Fahri menjadi Ketua Ikatan Akuntansi Indonesia. Saluran yang dilakukan oleh Fahri untuk melakukan mobilitas sosial adalah ....",
+ o:["pendidikan dan perkawinan","keagamaan dan pendidikan","profesi dan keagamaan","pendidikan dan profesi","prestasi dan militer"],k:3,
+ p:"Fahri menempuh kuliah (saluran <b>pendidikan</b>) lalu aktif di organisasi profesi hingga menjadi ketua (saluran <b>profesi</b>)."},
+{q:"Perhatikan bagan mobilitas sosial berikut! Dari bagan di atas dapat disimpulkan bahwa ....",
+ x:BAGAN16,o:["dua generasi tersebut mengalami mobilitas horizontal antargenerasi","anak dan orang tua mengalami mobilitas sosial vertikal naik","status sosial anak ke-3 lebih tinggi dari status sosial orang tuanya","antara orang tua dan anak-anaknya terjadi mobilitas sosial","mobilitas sosial terjadi pada anak ke-1 dan ke-2 saja"],k:0,
+ p:"Mobilitas horizontal adalah perpindahan status ke kelompok sosial lain yang masih <i>sederajat</i>. Ayah petani, anak-anaknya petani, pedagang, dan buruh: tingkatannya setara, tidak naik maupun turun. Jadi terjadi <b>mobilitas horizontal antargenerasi</b>."},
+{q:"Masyarakat Indonesia dikenal memiliki nilai gotong royong yang kuat. Namun, di era digital, individualisme semakin menguat, dan interaksi virtual seringkali menggantikan interaksi tatap muka. Meski demikian, semangat gotong royong tetap relevan dan menemukan bentuk baru dalam platform digital, seperti crowdfunding untuk kegiatan sosial atau kolaborasi online dalam proyek komunitas.\nFenomena adaptasi gotong royong di era digital ini menunjukkan bahwa ...",
+ o:["Nilai gotong royong telah kehilangan relevansinya dan hanya bertahan dalam bentuk simbolik.","Individualisme digital sepenuhnya menggantikan nilai-nilai kolektivisme tradisional.","Nilai-nilai budaya dapat beradaptasi dan berevolusi seiring perubahan zaman dan teknologi.","Masyarakat digital menciptakan nilai-nilai baru yang sepenuhnya berbeda dari nilai-nilai tradisional.","Gotong royong hanya efektif dalam konteks masyarakat tradisional dan tidak dapat diterapkan di era digital."],k:2,
+ p:"Crowdfunding dan kolaborasi online membuktikan bahwa gotong royong tidak hilang, tetapi <b>beradaptasi</b> dalam bentuk baru. Nilai budaya bersifat dinamis dan dapat berevolusi. Opsi lain terlalu ekstrem (kata “sepenuhnya”, “hanya”)."},
+{q:"Sebuah perusahaan swasta yang bergerak dalam bidang pertambangan melakukan pengeboran di wilayah Sidoarjo, Jawa Timur. Akibat pengeboran tersebut, muncul cairan lumpur dengan volume yang sangat banyak sehingga berdampak pada tenggelamnya beberapa desa. Sebagian korban, warga menuntut ganti rugi lahan dan hilangnya mata pencaharian kepada perusahaan. Konflik antara warga dengan pengusaha tersebut disebabkan oleh ....",
+ o:["ulah manusia yang tidak mengindahkan teknologi","bencana alam yang memengaruhi kondisi psikologis","bencana alam yang memicu terjadinya konflik sosial","perbedaan kepentingan antara warga dengan pengusaha","perubahan kebudayaan dapat disebabkan oleh bencana alam"],k:3,
+ p:"Penyebab konflik: perbedaan antarindividu, perbedaan kebudayaan, <b>perbedaan kepentingan</b>, dan perubahan sosial. Warga menuntut ganti rugi, sedangkan perusahaan berkepentingan pada usahanya, sehingga konflik dipicu perbedaan kepentingan."},
+{q:"Orang tua seorang gadis tidak setuju dengan calon suami pilihan putrinya karena tidak sesuai kriteria mereka. Karena cintanya pada calon suami, gadis tersebut tetap melangsungkan pernikahan meski tidak dihadiri oleh kedua orang tuanya. Konflik antara anak dengan orang tua tersebut melebar kepada keluarga besar dan menantu.\nDampak negatif konflik tersebut bagi ikatan sosial kedua keluarga besar adalah ....",
+ o:["hubungan kekeluargaan dua keluarga menjadi renggang","silaturahmi antara anak dengan orang tua menjadi putus","kedua orang tua ingin agar anak gadisnya menggugat cerai","pasangan keluarga muda itu tidak menaruh hormat kepada orang tua","cucu yang lahir nanti tidak akan dikenalkan kepada nenek dan kakeknya"],k:0,
+ p:"Soal menanyakan dampak bagi <i>ikatan sosial kedua keluarga besar</i>, karena konflik telah melebar kepada keluarga besar dan menantu. Dampak paling relevan adalah <b>hubungan kekeluargaan dua keluarga menjadi renggang</b>. Opsi B hanya menyangkut anak dengan orang tua, bukan kedua keluarga besar.<br><span class='note'>Catatan: kunci pada edisi koreksi (A); pada dokumen asli tertulis B.</span>"},
+{q:"Sengketa tapal batas antara dua negara tetangga diselesaikan dengan cara melakukan dialog diplomasi bilateral. Kedua pihak sepakat membuat tugu batas wilayah di tempat yang ditetapkan bersama dengan biaya patungan.\nCara penyelesaian konflik tersebut berupa akomodasi sosial dalam bentuk ....",
+ o:["kompromi","konsiliasi","ajudikasi","mediasi","arbitrasi"],k:0,
+ p:"<b>Kompromi</b>: pihak-pihak yang berkonflik saling mengurangi tuntutan. Tidak ada pihak ketiga (mediator, arbiter, atau pengadilan) dalam kasus ini; keduanya berunding langsung (bilateral) dan sepakat."},
+{q:"Dalam masyarakat multikultural seperti Indonesia, keberagaman identitas kelompok seringkali menjadi sumber potensi konflik. Namun, di sisi lain, keberagaman ini juga merupakan kekayaan budaya dan modal sosial yang dapat memperkuat bangsa.\nStrategi yang paling efektif untuk mengelola keberagaman identitas kelompok agar tidak menjadi sumber konflik, melainkan menjadi modal sosial adalah ...",
+ o:["Membangun kesadaran akan kesetaraan dan saling menghormati antar identitas kelompok, serta mengembangkan ruang dialog dan kolaborasi.","Mendorong asimilasi budaya minoritas ke budaya mayoritas agar tercipta keseragaman.","Memperkuat identitas kelompok masing-masing secara eksklusif agar tidak tercampur.","Menyerahkan pengelolaan keberagaman identitas kepada pemerintah dan aparat keamanan agar tercipta ketertiban.","Membatasi interaksi antar kelompok identitas agar potensi konflik dapat diminimalisir."],k:0,
+ p:"Kesadaran kesetaraan, saling menghormati, dialog, dan kolaborasi adalah strategi integrasi yang paling efektif dan berkelanjutan dalam masyarakat multikultural: mengakui keberagaman sekaligus membangun jembatan antarkelompok. Opsi lain bersifat memaksa, eksklusif, atau membatasi."},
+{q:"Perhatikan bagan mobilitas sosial berikut! Dari bagan di atas dapat disimpulkan telah terjadi .…",
+ x:BAGAN22,o:["mobilitas sosial antargenerasi naik","penurunan status sosial antargenerasi","status sosial dipengaruhi pribadi individu","status sosial ayah dan anak sama","mobilitas horizontal antargenerasi"],k:0,
+ p:"Orang tua berprofesi sebagai perawat, sedangkan anaknya menjadi dokter (status lebih tinggi). Antar dua generasi, terjadi <b>mobilitas vertikal naik</b> (<i>social climbing</i>) antargenerasi."},
+{q:"Faktor-faktor pendorong mobilitas sosial:\n(1) dukungan finansial yang kurang,\n(2) tingkat pendidikan masyarakat yang kurang,\n(3) struktur sosial yang terbuka,\n(4) situasi politik yang tidak stabil,\n(5) pindah lokasi tempat tinggal.\nYang termasuk faktor penghambat mobilitas sosial adalah ....",
+ o:["(1), (2), dan (3)","(1), (2), dan (4)","(1), (3), dan (5)","(2), (4), dan (5)","(3), (4), dan (5)"],k:1,
+ p:"Faktor penghambat mobilitas sosial: dukungan finansial kurang (1), tingkat pendidikan rendah (2), dan situasi politik tidak stabil (4). Struktur sosial terbuka (3) justru faktor pendorong."},
+{q:"Dalam suatu ceramah agama, seorang ustadz menekankan pentingnya mendidik anak secara baik. Anak merupakan karunia dari Allah yang dianugerahkan kepada orang tua untuk dibesarkan, diasuh, dan dididik agar kelak menjadi generasi yang baik. Peran ustadz tersebut ditujukan untuk semua kalangan. Peran ustadz sebagai bagian dari aktivitas sosial adalah ...",
+ o:["memberi petunjuk kepada manusia, baik yang hidup maupun mati","mendorong terciptanya hidup yang harmonis, damai, dan bahagia","mengajarkan kepada keluarga-keluarga untuk bisa hidup sejahtera","mengajarkan tata cara ritual peribadatan sesuai agamanya","menjaga masyarakat dari ancaman kejahatan"],k:1,
+ p:"Ceramah tentang mendidik anak agar menjadi generasi baik, ditujukan untuk semua kalangan, secara sosiologis berperan <b>mendorong terciptanya hidup harmonis, damai, dan bahagia</b> di masyarakat. Isi ceramah bukan tata cara ritual ibadah.<br><span class='note'>Catatan: kunci pada edisi koreksi (B); pada dokumen asli tertulis D.</span>"},
+{q:"Untuk meningkatkan pengaruh di masyarakat, Warno mendekati Warni anak juragan beras di desanya. Ia berharap suatu saat dapat menikahi Warni. Contoh tersebut menunjukkan bahwa mobilitas sosial berhubungan erat dengan .…",
+ o:["kegiatan ekonomi","status sosial","strategi kerja","usia perkawinan","jenis pendidikan"],k:1,
+ p:"Mobilitas sosial adalah perpindahan dari satu kelas sosial ke kelas lain. Warno ingin menikahi anak juragan (status lebih tinggi) untuk meningkatkan pengaruh, sehingga mobilitas berhubungan erat dengan <b>status sosial</b>."},
+{q:"Kelompok sosial dapat diklasifikasikan menjadi kelompok primer dan kelompok sekunder. Klasifikasi tersebut dilakukan atas dasar ....",
+ o:["kepentingannya","sifat hubungannya","tujuan kelompoknya","struktur organisasinya","derajat interaksi dan tujuannya"],k:4,
+ p:"Kelompok primer: kecil, hubungan dekat, personal, dan langgeng (contoh keluarga). Kelompok sekunder: lebih besar, dibentuk untuk tujuan tertentu, hubungan formal dan tidak langgeng. Dasarnya adalah <b>derajat interaksi dan tujuan</b>."},
+{q:"Kehidupan kota besar sangat majemuk dan kompleks. Anggota masyarakat datang dari berbagai latar belakang suku, agama, asal daerah, profesi, dan tingkat pendidikan yang berbeda. Kondisi tersebut dapat menunjukkan adanya diferensiasi sosial yang melahirkan ....",
+ o:["struktur majemuk","dinamika kebudayaan","stratifikasi sosial","akulturasi sosial","akumulasi sosial"],k:0,
+ p:"Diferensiasi sosial (pembedaan masyarakat secara horizontal berdasarkan suku, agama, daerah, profesi) melahirkan <b>struktur majemuk</b> / masyarakat plural. Stratifikasi bersifat vertikal (bertingkat), sedangkan akulturasi adalah percampuran budaya.<br><span class='note'>Catatan: kunci pada edisi koreksi (A); pada dokumen asli tertulis D.</span>"},
+{q:"Berikut ini adalah beberapa perilaku dalam masyarakat:\n(1) menyukai hasil budaya suku bangsa lain,\n(2) memilih pemimpin yang berasal dari putra daerah,\n(3) pernikahan laki-laki dan perempuan yang berbeda etnik,\n(4) menganggap rendah keberadaan kelompok etnik lain,\n(5) menghargai solidaritas antara kelompok suku bangsa.\nPerilaku yang sesuai dalam masyarakat multikultural adalah ....",
+ o:["(1), (2), dan (3)","(1), (2), dan (4)","(1), (3), dan (5)","(2), (4), dan (5)","(3), (4), dan (5)"],k:2,
+ p:"Perilaku multikultural mencerminkan toleransi, empati, dan penghargaan terhadap perbedaan: menyukai budaya suku lain (1), pernikahan beda etnik (3), dan menghargai solidaritas antarsuku (5). Nomor (2) bersifat primordial dan (4) bersifat etnosentris."},
+{q:"Secara sosiologis keberhasilan pemerintah menangani berbagai pergolakan di daerah yang akan memisahkan diri dari NKRI berdampak positif untuk memperkuat ....",
+ o:["budaya nasional","ekonomi nasional","anggaran nasional","integrasi nasional","kepemimpinan nasional"],k:3,
+ p:"Pergolakan/separatisme berdampak negatif berupa disintegrasi bangsa. Sebaliknya, keberhasilan menanganinya memperkuat <b>integrasi nasional</b> (persatuan bangsa)."},
+{q:"Perhatikan sejumlah fakta empiris berikut!\n(1) Sebagian penduduk Indonesia hidup dengan kualitas yang masih rendah.\n(2) Teknologi komunikasi dan transportasi belum merata di seluruh Indonesia.\n(3) Hasil kekayaan alam Indonesia dapat di ekspor ke berbagai belahan dunia.\n(4) Ribuan pulau di negara Indonesia terbentang dari Sabang hingga Merauke.\n(5) Hambatan dalam interaksi sosial antarpulau karena bentuk negara kepulauan.\nFakta yang terkait dengan penyebab kemajemukan budaya adalah ....",
+ o:["(1), (2), dan (3)","(1), (2), dan (4)","(1), (3), dan (5)","(2), (4), dan (5)","(3), (4), dan (5)"],k:3,
+ p:"Kemajemukan budaya dipengaruhi faktor geografis (isolasi antarwilayah). Fakta yang berkaitan: teknologi komunikasi dan transportasi belum merata (2), ribuan pulau Sabang–Merauke (4), dan hambatan interaksi antarpulau (5). Jadi <b>(2), (4), dan (5)</b>."},
+{q:"Konflik di daerah tertentu antara kelompok suku bangsa asli dengan kelompok suku bangsa pendatang terjadi karena adanya sejumlah warga pendatang mendominasi beberapa bidang kehidupan secara tidak baik. Upaya yang dapat dilakukan untuk mewujudkan masyarakat multikultural yang harmonis di daerah tersebut adalah .…",
+ o:["menghilangkan dendam antaranggota masyarakat","mencapai kesepakatan dalam masyarakat melalui paksaan","menyesuaikan kembali nilai dan norma yang berlaku","menciptakan integrasi sosial secara paksa oleh negara","mengubah kepribadian individu yang bertikai"],k:2,
+ p:"Memulihkan keharmonisan setelah konflik dilakukan dengan penanaman kembali dan <b>penyesuaian nilai serta norma</b> yang berlaku. Cara memaksa (B dan D) bertentangan dengan prinsip multikultural."},
+{q:"Warga masyarakat perkotaan cenderung lebih terbuka. Mereka sudah biasa berinteraksi dan bekerja sama dengan orang lain yang berbeda suku, ras, dan agama. Dampak positif dari proses mutual akulturasi tersebut adalah ....",
+ o:["mempercepat proses modernisasi","menghilangkan perbedaan sosial","mengurangi sentimen kelompok primordial","memudarkan identitas kepribadian individu","mendorong homogenitas masyarakat luas"],k:0,
+ p:"Sikap terbuka terhadap budaya lain membuat hasil kebudayaan masyarakat lain mudah dipelajari, sehingga <b>mempercepat modernisasi</b> (tersedianya nilai, norma, dan teknologi modern)."},
+{q:"Pembangunan dan pelebaran jalan raya negara tidak dapat diselesaikan tepat waktu karena adanya kelompok masyarakat yang tidak mau menjual lahan yang terkena proyek. Mereka beralasan, bahwa tanah warisan leluhur harus dipertahankan apa adanya dan tidak boleh dijual. Sikap penolakan masyarakat tersebut disebabkan adanya ....",
+ o:["unsur primordial","konflik horizontal","faktor tradisional","ajaran agama","kepentingan ekonomi"],k:0,
+ p:"Sikap <b>primordial</b> adalah loyalitas berlebihan terhadap ikatan kedaerahan, agama, suku bangsa, dan keluarga. Keyakinan bahwa tanah warisan leluhur tidak boleh dijual mencerminkan unsur primordial."},
+{q:"Program internet masuk desa, membawa banyak perubahan perilaku pada masyarakat desa terutama remaja di pedesaan. Dampak positif program tersebut pada perilaku remaja adalah ....",
+ o:["wawasan anak desa menjadi berkembang negatif","daya kritis anak desa menjadi lebih tinggi terhadap desanya","kehidupan di pedesaan menjadi sejahtera","anak muda pedesaan menjadi konsumtif","menukar informasi antarwarga desa"],k:1,
+ p:"Perubahan sosial progres (positif) menuju kemajuan, misalnya internet membuka dan memperluas <b>daya kritis anak desa</b>. Opsi A dan D bersifat negatif, sedangkan C terlalu luas."},
+{q:"Kesenjangan sosial ekonomi adalah suatu keadaan yang tidak seimbang di bidang sosial dan ekonomi dalam kehidupan masyarakat. Hal ini terjadi karena kurang adanya kesempatan untuk memperoleh sumber pendapatan, kesempatan kerja, dan kesempatan berpartisipasi dalam pembangunan. Contoh dampak yang muncul akibat kesenjangan dalam bidang tersebut adalah ....",
+ o:["lahirnya kelompok-kelompok sosial tertentu dalam masyarakat","munculnya kelas-kelas sosial terbuka bagi seluruh anggota masyarakat","terjadinya permasalahan sosial dalam keluarga karena orang tua sibuk bekerja","menimbulkan kecemburuan sosial yang dapat meresahkan masyarakat","menurunnya pendapatan per kapita akibat rendahnya produktivitas"],k:3,
+ p:"Kesenjangan dan sempitnya peluang paling rawan memicu <b>kecemburuan sosial</b> yang meresahkan masyarakat dan dapat berujung pada konflik terbuka.<br><span class='note'>Catatan: kunci pada edisi koreksi (D); pada dokumen asli tertulis A.</span>"},
+{q:"Masyarakat merupakan suatu organisasi yang terdiri dari unsur-unsur yang merupakan satu kesatuan. Jika salah satu unsur tidak berfungsi dengan baik maka akan terjadi ketidakseimbangan yang menyebabkan timbulnya disorganisasi sosial yang dapat berubah menjadi disintegrasi sosial. Contoh dampak terjadinya perubahan sosial tersebut adalah ....",
+ o:["masyarakat ikut serta berpartisipasi dalam pembangunan","meningkatnya kewibawaan para tokoh dan pimpinan masyarakat","meningkatnya solidaritas dalam kelompok-kelompok masyarakat","memudarnya nilai dan norma yang dijunjung tinggi dalam masyarakat","melemahkan lembaga pengendalian sosial dalam masyarakat"],k:3,
+ p:"Dampak negatif (regres) perubahan sosial ditandai kemunduran seperti kriminalitas, konflik, dan deviasi. Contoh disorganisasi sosial: <b>memudarnya nilai dan norma</b> yang dijunjung tinggi masyarakat."},
+{q:"Perkembangan teknologi kecerdasan buatan (AI) semakin pesat dan merambah berbagai bidang kehidupan, termasuk dunia kerja. Beberapa pekerjaan yang sebelumnya dilakukan manusia kini mulai digantikan oleh AI. Fenomena ini memunculkan kekhawatiran tentang potensi peningkatan pengangguran dan ketimpangan sosial.\nDalam konteks sosiologi fase F, dampak perkembangan AI terhadap dunia kerja ini paling relevan dikaji dengan konsep ...",
+ o:["Mobilitas sosial vertikal.","Diferensiasi pekerjaan.","Perubahan nilai kerja.","Ketimpangan struktural.","Disorganisasi sosial."],k:3,
+ p:"<b>Ketimpangan struktural</b> adalah ketidaksetaraan yang tertanam dalam sistem sosial-ekonomi. AI menggantikan pekerjaan rutin (banyak dikerjakan kelompok menengah dan bawah), sementara pekerjaan berketerampilan tinggi makin dihargai, sehingga kesenjangan struktur pekerjaan dan ekonomi melebar."},
+{q:"Perubahan sosial merupakan perubahan yang terjadi pada struktur dan fungsi masyarakat. Definisi tersebut menjelaskan tentang ....",
+ o:["arti perubahan","pola perubahan","sebab perubahan","tujuan perubahan","unsur yang berubah"],k:0,
+ p:"Kalimat tersebut merupakan <b>definisi</b> (pengertian) perubahan sosial, sehingga menjelaskan tentang arti perubahan.<br><span class='note'>Catatan: kunci pada edisi koreksi (A); pada dokumen asli tertulis E.</span>"},
+{q:"Proses pertumbuhan lembaga sosial secara tidak terencana lahir secara bertahap dalam praktik kehidupan masyarakat. Hal ini biasanya terjadi ketika manusia dihadapkan pada masalah-masalah yang berhubungan dengan pemenuhan kebutuhan hidupnya. Berikut ini yang merupakan contoh proses pertumbuhan lembaga sosial tersebut adalah .…",
+ o:["sistem barter","perusahaan dagang","sindikat kejahatan","lembaga pendidikan","lembaga perkawinan"],k:4,
+ p:"Lembaga sosial yang tumbuh bertahap dan tidak terencana dari kebiasaan/adat istiadat disebut <i>crescive institution</i>. Contoh klasiknya adalah <b>lembaga perkawinan</b>."},
+{q:"Sebuah komunitas petani di pedesaan mengalami kesulitan ekonomi akibat perubahan iklim yang menyebabkan gagal panen berulang. Generasi muda komunitas tersebut cenderung memilih untuk bermigrasi ke kota mencari pekerjaan yang lebih menjanjikan, meninggalkan pertanian sebagai mata pencaharian tradisional.\nFenomena migrasi generasi muda dari desa ke kota dalam konteks perubahan sosial ini dapat dianalisis sebagai bentuk dari ...",
+ o:["Mobilitas sosial horizontal.","Perubahan nilai generasi.","Diferensiasi struktural.","Disintegrasi komunitas.","Ketimpangan pembangunan desa-kota."],k:4,
+ p:"Migrasi desa-kota sering didorong ketidaksetaraan peluang ekonomi dan kualitas hidup. Perubahan iklim memperburuk kondisi desa (gagal panen), sehingga generasi muda mencari peluang di kota. Ini mencerminkan <b>ketimpangan pembangunan desa-kota</b>."},
+{q:"Perhatikan pernyataan berikut!\n(1) Memiliki simbol untuk menandai keunikan dari setiap lembaga.\n(2) Memiliki norma yang bersifat tertulis maupun tidak tertulis.\n(3) Memiliki fungsi yang terbatas.\n(4) Mempunyai tujuan yang jelas dan telah disepakati bersama.\n(5) Usia lembaga lebih singkat dibanding usia pemakai lembaga.\nYang tergolong ciri lembaga sosial adalah ....",
+ o:["(1), (2), dan (3)","(1), (2), dan (4)","(1), (3), dan (5)","(2), (4), dan (5)","(3), (4), dan (5)"],k:1,
+ p:"Ciri lembaga sosial: memiliki simbol (1), memiliki norma tertulis maupun tidak tertulis (2), dan bertujuan jelas serta disepakati bersama (4). Lembaga justru berfungsi luas dan berusia lebih panjang daripada pemakainya."},
+{q:"Pilpres digelar lima tahun sekali sesuai ketentuan perundangan yang berlaku di Indonesia. Dengan presiden dipilih langsung oleh rakyat, diharapkan akan mampu mengemban amanah dan memerhatikan kesejahteraan rakyat.\nTujuan lembaga politik dari ilustrasi tersebut adalah ....",
+ o:["membuat aturan agar setiap penyelenggaraan pilpres ada peluang untuk menang","mewujudkan keadilan dan kesejahteraan masyarakat sesuai amanah rakyat","memerhatikan aturan yang berlaku untuk melangsungkan kekuasaan","mengemban tugas amanah yang diberikan oleh partai pendukungnya","mengatur dan menyelenggarakan pelaksanaan Pemilihan Umum"],k:1,
+ p:"Presiden yang dipilih langsung diharapkan memperhatikan kesejahteraan rakyat. Tujuan lembaga politik pada ilustrasi ini adalah <b>mewujudkan keadilan dan kesejahteraan masyarakat</b> sesuai amanah rakyat."},
+{q:"Suatu penelitian yang bertujuan untuk menemukan gejala umum dari populasi yang berjumlah banyak dengan menggunakan instrumen kuesioner termasuk jenis penelitian ....",
+ o:["survei","historik","eksploratif","eksperimen","inquiri alamiah"],k:0,
+ p:"Metode <b>survei</b> digunakan untuk memperoleh fakta dari gejala yang ada dalam populasi besar (ratusan hingga ribuan responden), umumnya dengan kuesioner baku."},
+{q:"Dalam upaya pemberdayaan komunitas perempuan pengrajin tenun tradisional, sebuah organisasi non-profit merancang program pelatihan digital marketing dan desain produk yang inovatif, tanpa menghilangkan ciri khas motif tenun lokal. Program ini bertujuan untuk meningkatkan daya saing produk tenun di pasar yang lebih luas.\nStrategi pemberdayaan komunitas yang diterapkan organisasi non-profit ini menunjukkan pendekatan yang ...",
+ o:["Mengabaikan kearifan lokal demi modernisasi ekonomi.","Mengintegrasikan kearifan lokal dengan inovasi dan teknologi modern.","Mempertahankan kearifan lokal secara eksklusif tanpa inovasi.","Menggantikan kearifan lokal dengan keterampilan modern yang lebih relevan.","Memisahkan kearifan lokal dari kegiatan ekonomi agar tetap lestari."],k:1,
+ p:"Pelatihan digital marketing dan desain inovatif sambil mempertahankan motif tenun lokal menunjukkan pendekatan <b>integratif</b>: kearifan lokal diperkuat dengan inovasi dan teknologi agar berdaya saing."},
+{q:"Joni melakukan penelitian di sekolahnya tentang pengaruh penggunaan internet terhadap kemudahan siswa mencari bahan belajar. Joni mendata para siswa yang menggunakan internet dari seluruh kelas. Kemudian, ia mengambil nomor urut kelipatan 3 dari seluruh pengguna internet.\nTeknik pengambilan sampel penelitian tersebut adalah ....",
+ o:["stratifikasi","wilayah","purposif","kelompok","random"],k:4,
+ p:"Pengambilan sampel berdasarkan interval/kelipatan tertentu (kelipatan 3) dari daftar populasi adalah ciri <b>sampling acak sistematis</b> (<i>systematic random sampling</i>), tergolong teknik probabilitas (random). Purposif bergantung pada pertimbangan peneliti, bukan interval.<br><span class='note'>Catatan: kunci pada edisi koreksi (E); pada dokumen asli tertulis C.</span>"},
+{q:"Populasi yang direncanakan dalam penelitian dinamakan populasi ....",
+ o:["target","survei","rencana","fokus","observasi"],k:0,
+ p:"Kelompok besar subjek yang karakteristiknya telah ditetapkan peneliti sejak perencanaan studi disebut <b>populasi target</b>."},
+{q:"Angket atau kuesioner adalah sebuah cara atau instrumen yang digunakan seorang peneliti untuk mengumpulkan data dengan menyebarkan sejumlah lembar pertanyaan-pertanyaan yang harus dijawab oleh responden.\nKelebihan dari instrumen pengumpulan data tersebut adalah ....",
+ o:["memerlukan kehadiran sang peneliti","dapat menjangkau responden dalam jumlah banyak","dapat menyampaikan semua pertanyaan dengan baik dan tepat","dapat menciptakan hubungan baik dengan responden","dapat mengembangkan pertanyaan yang telah dirumuskan"],k:1,
+ p:"Keunggulan utama kuesioner adalah dapat <b>menjangkau responden dalam jumlah banyak</b> secara efisien tanpa harus bertatap muka. Opsi A, C, D, E justru lebih mencirikan wawancara."},
+{q:"Dalam penelitian sosiologi, metode yang dilakukan dengan mengambil data atau keterangan dari buku literatur di perpustakaan disebut ....",
+ o:["metode survei","metode empiris","metode statistik","metode studi kasus","metode studi pustaka"],k:4,
+ p:"<b>Studi pustaka</b> adalah metode pengumpulan data dari arsip, buku literatur, jurnal, atau majalah di perpustakaan maupun sumber terpercaya lainnya."},
+{q:"Perhatikan tabel hasil survei siswa SMA yang berniat kuliah berikut!\nDari tabel tersebut dapat disimpulkan bahwa ....",
+ x:TBL49,o:["Universitas A paling favorit bagi siswa","peminat Universitas F lebih banyak dari E","siswa paling banyak berniat masuk Universitas B","rata-rata siswa SMA berniat masuk Universitas C","Universitas D tidak diminati oleh siswa SMA"],k:2,
+ p:"Frekuensi tertinggi adalah Universitas B (2.600), sedangkan terendah Universitas A (1.000). Jadi <b>siswa paling banyak berniat masuk Universitas B</b>. F (1.400) lebih sedikit dari E (2.500), dan D tetap diminati (1.200)."},
+{q:"Salah satu bagian inti laporan penelitian adalah sajian data hasil penelitian. Guna sajian data tersebut bagi peneliti adalah ....",
+ o:["membantu peneliti dalam membuat simpulan penelitian","membuat tabel data dari laporan agar mudah dibaca","menyembunyikan atau membuang data yang tidak penting","memunculkan data yang sesuai dengan kehendak peneliti","sebagai informasi kepada publik atas hasil penelitiannya"],k:4,
+ p:"Sajian data hasil penelitian berguna untuk <b>memberikan informasi kepada publik</b> atas hasil penelitian (diseminasi)."}
+];
+
+/* ===== STATE ===== */
+var N=Q.length, PTS=2, DURATION=90*60;
+var L=["A","B","C","D","E"];
+var ans=[], flag=[], cur=0, left=DURATION, tick=null, nama="", submitted=false, startAt=0;
+var $=function(id){return document.getElementById(id)};
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function fmt(s){var m=Math.floor(s/60),d=s%60;return (m<10?"0":"")+m+":"+(d<10?"0":"")+d}
+
+function show(id){["start","exam","result"].forEach(function(x){$(x).classList.toggle("hidden",x!==id)});window.scrollTo(0,0)}
+
+function startExam(){
+  nama=$("nama").value.trim()||"Peserta";
+  ans=new Array(N).fill(-1); flag=new Array(N).fill(false);
+  cur=0; left=DURATION; submitted=false; startAt=Date.now();
+  $("peserta").textContent=nama;
+  buildGrid(); render(); show("exam");
+  clearInterval(tick);
+  tick=setInterval(function(){
+    left--; $("timer").textContent=fmt(Math.max(left,0));
+    $("timer").classList.toggle("low",left<=300);
+    if(left<=0){clearInterval(tick);finish(true)}
+  },1000);
+  $("timer").textContent=fmt(left);$("timer").classList.remove("low");
+}
+
+function buildGrid(){
+  var g=$("grid");g.innerHTML="";
+  for(var i=0;i<N;i++){
+    var b=document.createElement("button");b.className="nb";b.textContent=i+1;b.dataset.i=i;
+    b.onclick=(function(i){return function(){go(i)}})(i);
+    g.appendChild(b);
+  }
+}
+function updateGrid(){
+  var bs=$("grid").children,a=0,f=0;
+  for(var i=0;i<N;i++){
+    var c="nb";
+    if(ans[i]>=0){c+=" ans";a++}
+    if(flag[i]){c+=" flag";f++}
+    if(i===cur)c+=" cur";
+    bs[i].className=c;
+  }
+  $("stAns").textContent=a+"/"+N;$("stFlag").textContent=f;
+  $("bar").style.width=(a/N*100)+"%";
+}
+function go(i){cur=Math.max(0,Math.min(N-1,i));render()}
+
+function render(){
+  var d=Q[cur],h="";
+  h+='<div class="qhead"><span class="qno">Soal '+(cur+1)+' <small style="font-weight:500">/ '+N+'</small></span><span class="pts">Bobot '+PTS+' poin</span></div>';
+  h+='<div class="qtext">'+esc(d.q).replace(/\n/g,"<br>")+'</div>';
+  if(d.x)h+='<div class="extra">'+d.x+'</div>';
+  h+='<div class="opts">';
+  d.o.forEach(function(t,i){
+    h+='<button class="opt'+(ans[cur]===i?" sel":"")+'" data-i="'+i+'"><span class="l">'+L[i]+'</span><span>'+esc(t)+'</span></button>';
+  });
+  h+='</div><div class="nav">'+
+    '<button class="btn btn-ghost" id="bPrev"'+(cur===0?" disabled":"")+'>◀ Sebelumnya</button>'+
+    '<button class="btn btn-warn'+(flag[cur]?" on":"")+'" id="bFlag">⚑ Ragu-ragu</button>'+
+    '<span class="spacer"></span>'+
+    '<button class="btn btn-ghost" id="bClear"'+(ans[cur]<0?" disabled":"")+'>Hapus Jawaban</button>'+
+    '<button class="btn btn-primary" id="bNext">'+(cur===N-1?"Tinjau ▶":"Berikutnya ▶")+'</button></div>';
+  $("qcard").innerHTML=h;
+  $("qcard").querySelectorAll(".opt").forEach(function(b){
+    b.onclick=function(){ans[cur]=+b.dataset.i;render()};
+  });
+  $("bPrev").onclick=function(){go(cur-1)};
+  $("bNext").onclick=function(){cur===N-1?askFinish():go(cur+1)};
+  $("bFlag").onclick=function(){flag[cur]=!flag[cur];render()};
+  $("bClear").onclick=function(){ans[cur]=-1;render()};
+  updateGrid();
+}
+
+/* Modal */
+function askFinish(){
+  var a=ans.filter(function(x){return x>=0}).length,f=flag.filter(Boolean).length;
+  $("mTitle").textContent="Kumpulkan jawaban?";
+  $("mBody").innerHTML='<p style="margin:0">Terjawab <b>'+a+'</b> dari '+N+' soal. Belum dijawab: <b>'+(N-a)+'</b>. Ragu-ragu: <b>'+f+'</b>.</p><p style="color:#6b7488;font-size:14px">Setelah dikumpulkan, jawaban tidak dapat diubah.</p>';
+  $("modal").classList.remove("hidden");
+}
+function closeModal(){$("modal").classList.add("hidden")}
+
+/* Finish */
+function finish(auto){
+  if(submitted)return;submitted=true;clearInterval(tick);closeModal();
+  var ok=0,bad=0,skip=0;
+  for(var i=0;i<N;i++){
+    if(ans[i]<0)skip++;else if(ans[i]===Q[i].k)ok++;else bad++;
+  }
+  var score=ok*PTS, used=Math.min(DURATION-Math.max(left,0),DURATION);
+  var pred,msg,key;
+  if(score>=90){pred="Sangat Baik";key="A";msg="Luar biasa! Pemahaman konsepmu sangat kuat. Pertahankan dan coba soal HOTS lainnya."}
+  else if(score>=75){pred="Baik";key="B";msg="Bagus! Tinggal perkuat beberapa konsep yang masih keliru pada pembahasan di bawah."}
+  else if(score>=60){pred="Cukup";key="C";msg="Sudah cukup, namun masih perlu latihan. Fokus pada soal yang salah dan baca pembahasannya."}
+  else{pred="Perlu Ditingkatkan";key="D";msg="Jangan menyerah. Pelajari ulang materi dan kerjakan simulasi ini kembali."}
+  $("rScore").textContent=score;
+  $("ring").style.setProperty("--p",(score)+"%");
+  $("rName").textContent="Hasil Ujian — "+nama;
+  $("rPred").textContent="Predikat: "+pred;
+  $("rMsg").textContent=(auto?"Waktu habis, jawaban dikumpulkan otomatis. ":"")+msg;
+  $("rTime").textContent="Waktu pengerjaan: "+fmt(used)+" dari "+fmt(DURATION);
+  $("cOk").textContent=ok;$("cBad").textContent=bad;$("cSkip").textContent=skip;
+  $("cPct").textContent=Math.round(ok/N*100)+"%";
+  document.querySelectorAll("#rubTable tbody tr").forEach(function(tr){tr.classList.toggle("me",tr.dataset.r===key)});
+  buildRGrid();buildReview("all");
+  document.querySelectorAll("#filters .chip").forEach(function(c){c.classList.toggle("on",c.dataset.f==="all")});
+  show("result");
+}
+function status(i){return ans[i]<0?"skip":(ans[i]===Q[i].k?"ok":"bad")}
+function buildRGrid(){
+  var g=$("rGrid");g.innerHTML="";
+  for(var i=0;i<N;i++){
+    var b=document.createElement("button");b.className="nb "+status(i);b.textContent=i+1;
+    b.onclick=(function(i){return function(){
+      document.querySelectorAll("#filters .chip").forEach(function(c){c.classList.toggle("on",c.dataset.f==="all")});
+      buildReview("all");
+      var el=document.getElementById("rv"+i);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+    }})(i);
+    g.appendChild(b);
+  }
+}
+function buildReview(f){
+  var h="";
+  for(var i=0;i<N;i++){
+    var s=status(i);if(f!=="all"&&f!==s)continue;
+    var d=Q[i];
+    var tag=s==="ok"?'<span class="tag ok">✔ Benar +'+PTS+'</span>':s==="bad"?'<span class="tag bad">✘ Salah +0</span>':'<span class="tag skip">○ Kosong +0</span>';
+    h+='<div class="qcard review-item" id="rv'+i+'"><div class="qhead"><span class="qno">Soal '+(i+1)+'</span>'+tag+'</div>';
+    h+='<div class="qtext">'+esc(d.q).replace(/\n/g,"<br>")+'</div>';
+    if(d.x)h+='<div class="extra">'+d.x+'</div>';
+    h+='<div class="opts">';
+    d.o.forEach(function(t,j){
+      var c="opt";if(j===d.k)c+=" ok";else if(j===ans[i])c+=" no";
+      var mark=j===d.k?" ✔":(j===ans[i]?" ✘ (jawabanmu)":"");
+      h+='<div class="'+c+'" style="cursor:default"><span class="l">'+L[j]+'</span><span>'+esc(t)+'<b>'+mark+'</b></span></div>';
+    });
+    h+='</div><div class="explain '+s+'"><h4>Kunci: '+L[d.k]+(ans[i]>=0?' &nbsp;•&nbsp; Jawabanmu: '+L[ans[i]]:' &nbsp;•&nbsp; Tidak dijawab')+'</h4>'+d.p+'</div></div>';
+  }
+  $("review").innerHTML=h||'<div class="qcard" style="text-align:center">Tidak ada soal pada kategori ini.</div>';
+}
+
+/* Events */
+$("btnStart").onclick=startExam;
+$("nama").addEventListener("keydown",function(e){if(e.key==="Enter")startExam()});
+$("btnFinish").onclick=askFinish;
+$("mCancel").onclick=closeModal;
+$("mOk").onclick=function(){finish(false)};
+$("btnRetry").onclick=function(){show("start")};
+document.querySelectorAll("#filters .chip").forEach(function(c){
+  c.onclick=function(){
+    document.querySelectorAll("#filters .chip").forEach(function(x){x.classList.remove("on")});
+    c.classList.add("on");buildReview(c.dataset.f);
+  };
+});
+document.addEventListener("keydown",function(e){
+  if($("exam").classList.contains("hidden")||!$("modal").classList.contains("hidden"))return;
+  if(e.target.tagName==="INPUT")return;
+  var k=e.key.toUpperCase();
+  if("ABCDE".indexOf(k)>-1&&k.length===1){ans[cur]="ABCDE".indexOf(k);render()}
+  else if(e.key==="ArrowRight")go(cur+1);
+  else if(e.key==="ArrowLeft")go(cur-1);
+});
+window.addEventListener("beforeunload",function(e){if(!$("exam").classList.contains("hidden")){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>
